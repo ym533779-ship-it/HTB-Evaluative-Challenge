@@ -1,0 +1,40 @@
+# Evaluative - Challenge Writeup
+
+## Summary
+The challenge requires evaluating an 8th-degree polynomial of the form:
+P(x) = a₀ + a₁x + a₂x² + ... + a₈x⁸
+
+## Analysis
+The primary hurdle is the potential for **Integer Overflow**. 
+- The coefficients ($a_i$) and $x$ are between -100 and 100.
+- $100^8$ results in $10^{16}$, which exceeds the $2 \times 10^9$ limit of a standard 32-bit signed integer.
+- A 64-bit `long long` (which handles up to $9 \times 10^{18}$) is required for accurate computation.
+
+## Solution
+We implement an iterative solution in C. We read the 9 coefficients first, then the $x$ value, and calculate the sum using a running power variable to maintain efficiency.
+
+### Source Code (main.c)
+
+#include <stdio.h>
+
+int main() {
+    long long a[9];
+    long long x, result = 0, x_power = 1;
+
+    for (int i = 0; i < 9; i++) {
+        if (scanf("%lld", &a[i]) != 1) return 0;
+    }
+    if (scanf("%lld", &x) != 1) return 0;
+
+    for (int i = 0; i < 9; i++) {
+        result += a[i] * x_power;
+        x_power *= x;
+    }
+
+    printf("HTB{%lld}\n", result);
+    return 0;
+}
+##here is Output of the code:
+input : -87 -23 -90 -65 -95 -74 -60 69 49 -99
+​Result: 445657855229322924
+flag: HTB{eV4LuaT1nG_p0LyN0M1aL5_f0R_7H3_w1N}
